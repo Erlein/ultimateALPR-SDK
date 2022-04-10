@@ -5,7 +5,7 @@ import json							# JSON
 import time							# Timing
 from PIL import Image 				# Pillow used to open Image
 
-begin = time.process_time()
+begin = time.perf_counter()
 
 # Argument parsing
 ap = argparse.ArgumentParser()
@@ -37,7 +37,7 @@ outFile = os.open(args.outDir, os.O_CREAT|os.O_RDWR)
 # Engine init
 #checkResult("Init", alpr.UltAlprSdkEngine_init(json.dumps(CONFIG)))
 alpr.UltAlprSdkEngine_init(json.dumps(CONFIG))
-it = round(time.process_time() - begin, 3)
+it = round(time.perf_counter() - begin, 3)
 print("Init time taken:", it)
 itStr = str(it) + "\n"
 os.write(outFile, (str.encode(itStr)))
@@ -55,11 +55,11 @@ for r, dir, files in path:
 			# Load image and gather relevant info
 			img = Image.open(os.path.join(args.input, file))	# Load image
 			width, height = img.size							# Get image size.
-			start = time.process_time()							# Start timing for LPR
+			start = time.perf_counter()							# Start timing for LPR
 
 			# Perform LPR
 			out = alpr.UltAlprSdkEngine_process(format, img.tobytes(), width, height, 0)
-			tt = round(time.process_time() - start, 3)					# Calcualte and log time for LPR
+			tt = round(time.perf_counter() - start, 3)					# Calcualte and log time for LPR
 
 			# Parse JSON output and output
 			output = out.json()
@@ -80,10 +80,11 @@ for r, dir, files in path:
 			os.write(outFile, str.encode(outStr))
 
 # Printing statistics for entire run
+totTime = time.perf_counter() - begin
 print("\nTotal images:", imgCnt) # Output-spacer
 print("Plates detected:", dets)
-print("Proportion:" ,str(round((dets / imgCnt)*100,3)) + "%\n")
-
+print("Proportion:" ,str(round((dets / imgCnt)*100,3)) + "%")
+print("Time taken:", totTime, "\n")
 # Pause
 # input("\nPress enter to deinit engine and exit program.")
 
