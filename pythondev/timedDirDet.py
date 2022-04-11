@@ -84,7 +84,6 @@ totTime = time.perf_counter() - begin
 print("\nTotal images:", imgCnt) # Output-spacer
 print("Plates detected:", dets)
 print("Proportion:" ,str(round((dets / imgCnt)*100,3)) + "%")
-print("Time taken:", totTime, "\n")
 print("Time taken:", round(totTime,3), "\n")
 outStr = "totTime," + str(round(totTime,3))
 os.write(outFile, str.encode(outStr))
